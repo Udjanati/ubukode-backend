@@ -1,6 +1,6 @@
-import {users} from "../database/models";
-import { hashPassword, isPasswordMatching } from "../utilis/hashedPassword";
-import { generateToken } from "../utilis/token";
+import {users} from "../../database/models";
+import { hashPassword, isPasswordMatching } from "../../utilis/hashedPassword";
+import { generateToken } from "../../utilis/token";
 const createNewUser = async(req, res)=>{
     const {firstName, lastName, email, password} = req.body;
     //const emailRegex = /\S+@\S+\.\S+/;
