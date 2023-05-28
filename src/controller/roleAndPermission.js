@@ -3,7 +3,7 @@ import { hashPassword } from "../utilis/hashedPassword";
 
 const createAdmin = async (req, res) => {
   try {
-    const { password, permissions } = req.body;
+    const { firstName, lastName, email, password, permissions } = req.body;
     const hashedPassword = await hashPassword(password);
     let newRole = await db.role.findOne({ where: { roleName: 'admin' } });
 
@@ -11,20 +11,26 @@ const createAdmin = async (req, res) => {
       newRole = await db.role.create({
         roleName: 'admin'
       });
-      const admin = await db.user.create({
+
+      const admin = await db.users.create({
         ...req.body,
         password: hashedPassword,
         roleId: newRole.id
       });
-      const newPermission = await db.permission.create({
-        name: permissions
-      });
-      if (newPermission) {
-        await db.rolePermission.create({
-          roleId: newRole.id,
-          permissionId: newPermission.id
-        });
+
+      if (Array.isArray(permissions) && permissions.length > 0) {
+        const createdPermissions = await db.permission.bulkCreate(
+          permissions.map(permission => ({ name: permission }))
+        );
+
+        await db.rolePermission.bulkCreate(
+          createdPermissions.map(permission => ({
+            roleId: newRole.id,
+            permissionId: permission.id
+          }))
+        );
       }
+
       res.json({
         status: 201,
         message: 'Admin added',

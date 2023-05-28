@@ -1,6 +1,4 @@
-import { config } from 'dotenv';
-
-config();
+require('dotenv').config();
 
 module.exports = {
   development: {
@@ -16,13 +14,6 @@ module.exports = {
     database: process.env.DB_TEST_NAME,
     host: process.env.DB_TEST_HOST,
     dialect: 'postgres',
-    sslmode: require,
-    dialectOptions: {
-      ssl: {
-        require: true,
-        rejectUnauthorized: false,
-      },
-    },
   },
   production: {
     username: process.env.DB_PROD_USERNAME,
@@ -30,12 +21,5 @@ module.exports = {
     database: process.env.DB_PROD_NAME,
     host: process.env.DB_PROD_HOST,
     dialect: 'postgres',
-    sslmode: require,
-    dialectOptions: {
-      ssl: {
-        require: true,
-        rejectUnauthorized: false,
-      },
-    },
   },
 };
