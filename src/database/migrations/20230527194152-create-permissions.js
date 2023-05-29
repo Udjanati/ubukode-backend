@@ -9,9 +9,25 @@ module.exports = {
         primaryKey: true,
         type: Sequelize.INTEGER
       },
-      name: {
+      userId: {
         allowNull: false,
-        type: Sequelize.ARRAY(Sequelize.STRING),
+        type: Sequelize.INTEGER,
+        references: {
+          model: 'users',
+          key: 'id',
+          onDelete: 'CASCADE', // add cascade on delete
+          onUpdate: 'CASCADE',
+        },
+      },
+      roleId: {
+        allowNull: false,
+        type: Sequelize.INTEGER,
+        references: {
+          model: 'roles',
+          key: 'id',
+          onDelete: 'CASCADE', // add cascade on delete
+          onUpdate: 'CASCADE',
+        },
       },
       createdAt: {
         allowNull: false,
