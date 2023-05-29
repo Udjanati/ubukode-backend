@@ -1,19 +1,10 @@
-import JWT from 'jsonwebtoken';
-import dotenv from 'dotenv';
+import jwt from "jsonwebtoken";
+import "dotenv/config";
 
-dotenv.config();
+export const generateToken =(data)=>{
+return jwt.sign(data, process.env.JWT_KEY , {expiresIn:"1d"});
+}
+export const decodeToken =(token)=>{
+    return jwt.verify(token,process.env.JWT_KEY);
 
-export default class Jwt {
-  static generateToken(data, exp = '1d') {
-    return JWT.sign(data, process.env.ACCESS_TOKEN_SECRET, { expiresIn: exp });
-  }
-
-  static verifyToken(token) {
-    return JWT.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, decoded) => {
-      if (err) {
-        return { error: err };
-      }
-      return { value: decoded };
-    });
-  }
 }
