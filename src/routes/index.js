@@ -5,7 +5,8 @@ import allUserApi from "../controller/users/userController";
 import deleteAllUser from "../controller/users/userController";
 import createRolesController from "../controller/roles/createRoles";
 import createUserPermission from "../controller/permissions/createPermissions";
-import addUserActivities from "../controller/users/userActivities"
+import addUserActivities from "../controller/users/userActivities";
+import addrolesUserActivity from "../controller/users/rolesUserActivities"
 
 const router = Router();
 
@@ -16,6 +17,7 @@ router.delete("/delete/user", deleteAllUser.deleteAll)
 router.post('/create/roles', createRolesController.createUserRoles)
 router.post("/add/permission",createUserPermission.createUserPermissions)
 router.post("/add/activities", addUserActivities.createActivities)
+router.post("/add/role/user/activity", addrolesUserActivity.rolesUserActivity)
 
 
 export default router;
