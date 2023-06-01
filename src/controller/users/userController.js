@@ -4,13 +4,13 @@ import { generateToken } from "../../utilis/token";
 const createNewUser = async(req, res)=>{
     const {firstName, lastName, email, password} = req.body;
     //const emailRegex = /\S+@\S+\.\S+/;
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if(!emailRegex.test(email)){
-        return res.json({status:400, message:"Invalid email address"})
-    }
-    if (!password || password.length < 8){
-        return res.json({status:400, message:"Password must be at least 8 characters"})
-    }
+    // const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    // if(!emailRegex.test(email)){
+    //     return res.json({status:400, message:"Invalid email address"})
+    // }
+    // if (!password || password.length < 8){
+    //     return res.json({status:400, message:"Password must be at least 8 characters"})
+    // }
 
     try {
         const hashedPassword = await hashPassword(password);
