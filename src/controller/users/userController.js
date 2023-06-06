@@ -29,48 +29,117 @@ const createNewUser = async(req, res)=>{
         
     } catch (error) {
         console.log(error)
-        return res.json({status:500, message:"Internal server"})
+        return res.json({status:500, message:"Internal server error"})
         
     }
 
 }
-const loginUser =async (req, res)=>{
-    let {email, password} = req.body;
-    const currentUser = await users.findOne({where:{email}})
-    if(!currentUser){
-        return res.json({status:404, message:"user is not exist"})
+const loginUser = async (req, res) => {
+    try {
+      let { email, password } = req.body;
+      const currentUser = await users.findOne({ where: { email } });
+      
+      if (!currentUser) {
+        return res.json({ status: 404, message: "User does not exist" });
+      }
+      
+      if (isPasswordMatching(password, currentUser.password)) {
+        users.password = null;
+        const token = generateToken({ currentUser });
+        return res.json({
+          message: "Successfully Logged in",
+          status: 200,
+          data: currentUser,
+          token,
+        });
+      }
+    } catch (error) {
+      console.log(error);
+      return res.json({ status: 500, message: "Internal Server Error" });
     }
-    if(isPasswordMatching(password, currentUser.password)){
-        users.password= null;
-        const token = generateToken({currentUser});
-        return res.json({message:"Successfully Logged in",status:200, data:currentUser, token})
-
-    }
-
-}
+  };
+  
 
 const allUser = async (req, res) => {
     try {
       const Users = await users.findAll();
-      return res.json( Users );
+      return res.json( {status:200,message:"Retrieve all users successfully", data:Users});
     } catch (error) {
       console.log(error);
-      return res.json({ status: 500, message: "Internal server" });
+      return res.json({ status: 500, message: "Internal server error" });
+    }
+  };
+
+  const oneUser = async(req,res) =>{
+    try {
+        const {id} = req.params;
+        const Users = await users.findOne({where:{id}})
+        if (Users === 0){
+            return res.json({status:404, error:"User Not found"})
+
+        }
+        return res.json({status:200,message:"Retrieve one user successfully", data:Users})
+    } catch (error) {
+        return res.json({status:500, error:"Internal server Error"})
+        
+    }
+  }
+  
+  const deleteAll = async (req, res) => {
+    try {
+        const deletedUsers = await users.destroy({ where: {} });
+  
+      return res.json({
+        status: 201,
+        message: "Delete users successfully",
+        data: deletedUsers,
+      });
+    } catch (error) {
+      console.log(error);
+      return res.json({ status: 500, message: "Internal server error" });
     }
   };
   
-  const deleteAll = async(req,res)=>{
+
+  const deleteById = async (req, res) => {
     try {
-        const deeleteUser = await users.destroy()
-        return res.json({status:201, message:"Delete user successfully", data:deeleteUser})
-        
+      const { id } = req.params;
+      const deletedUser = await users.destroy({ where: { id } });
+  
+      if (deletedUser === 0) {
+        return res.json({ status: 404, message: "User not found" });
+      }
+  
+      return res.json({
+        status: 200,
+        message: "User deleted successfully",
+        data: deletedUser,
+      });
     } catch (error) {
-        
       console.log(error);
-      return res.json({ status: 500, message: "Internal server" });
+      return res.json({ status: 500, message: "Internal Server Error" });
+    }
+  };
+  
+const updateById = async(req,res)=>{
+    try {
+        const { id } = req.params;
+        const {firstName,lastName,email,password } = req.body;
+
+        const updatedUser = await users.update(
+            {firstName,lastName,email,password } ,
+            {where:{id}})
+            if(updatedUser[0] === 0){
+                return res.json({status:404,error:"User not found"})
+            }
+            return res.json({status:200,message:"User updated successfully", data:updatedUser})
+    } catch (error) {
+        console.log(error);
+    return res.json({ status: 500, message: "Internal Server Error" });
+        
     }
 
-  }
 
+}
 
-export default {createNewUser, loginUser, allUser , deleteAll}
+export default {createNewUser, loginUser, allUser , deleteAll, deleteById , updateById, oneUser}
