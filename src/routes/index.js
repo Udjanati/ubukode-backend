@@ -10,12 +10,12 @@ import addrolesUserActivity from "../controller/users/rolesUserActivities";
 import deleteOneUser from "../controller/users/userController";
 import updateOneUser from "../controller/users/userController";
 import getOneUser from "../controller/users/userController";
-
+import {protect} from "../middlewares/verifyToken"
 const router = Router();
 
 router.post("/user/create", createNewUsers.createNewUser);
 router.post("/user/login", loginApi.loginUser);
-router.get("/user",allUserApi.allUser);
+router.get("/user",protect,allUserApi.allUser);
 router.delete("/delete/user", deleteAllUser.deleteAll);
 router.post('/create/roles', createRolesController.createUserRoles);
 router.post("/add/permission",createUserPermission.createUserPermissions);
@@ -26,3 +26,4 @@ router.put("/update/:id", updateOneUser.updateById);
 router.get("/user/:id",getOneUser.oneUser);
 
 export default router;
+ 
